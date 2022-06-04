@@ -12,7 +12,9 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
-app.use('/api/goals', require('./routes/goalRoutes')) //redirect to routes on goalRoutes file
+//redirect to routes
+app.use('/api/goals', require('./routes/goalRoutes'))
+app.use('/api/users', require('./routes/userRoutes'))
 
 //this middleware will replace express error handler.
 app.use(errorHandler) 
