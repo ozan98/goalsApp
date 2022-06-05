@@ -12,7 +12,7 @@ const initialState = {
     message: ''
 }
 
-//Register User // async thunk fucntions
+//Register User // async thunk fucntions //API call to register a user
 //createAsyncThunk takes in a string as the action and a function that takes in a user and thinkAPI
 //user is sent in throug the register page
 export const register = createAsyncThunk('auth/register', async (user, thunkAPI) => {
@@ -47,6 +47,13 @@ export const authSlice = createSlice({
             state.isLoading = false
             state.isSuccess = true
             state.user = action.payload // The payload is what is returned from register from the auth service
+        })
+        .addCase(register.rejected, (state, action) => {
+            state.isLoading = false
+            state.isError = true
+            state.message = action.payload
+            state.user = null //something went wrong during register
+
         })
     },
 }) 
