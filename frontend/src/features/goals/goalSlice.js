@@ -24,7 +24,21 @@ export const createGoal = createAsyncThunk('goals/create', async (goalData, thun
     }
 })
 
-
+// Get user goals
+//not passing anything but still want thunkApi, must add _ as first parameter
+export const getGoals = createAsyncThunk('goals/getAll', async (_, thunkAPI) => {
+    try {
+        //retrive the user with token from the auth state in authSlice
+        //thunkAPI allows us to tap into any state in our application(e.g the state in authSlice)
+        const token = thunkAPI.getState().auth.user.token
+        return await goalService.getGoals(token)
+    } catch (error) {
+        const message = (error.response && error.response.data && error.response.data.message) ||
+                        error.message || error.toString()
+        
+        return thunkAPI.rejectWithValue(message) 
+    }
+})
 
 export const goalSlice = createSlice({
     name: 'goal',
@@ -43,6 +57,19 @@ export const goalSlice = createSlice({
             state.goals.push(action.payload)
         })
         .addCase(createGoal.rejected, (state, action) => {
+            state.isLoading = false
+            state.isError = true
+            state.message = action.payload
+        })
+        .addCase(getGoals.pending, (state) => {
+            state.isLoading = true
+        })
+        .addCase(getGoals.fulfilled, (state, action) => {
+            state.isLoading = false
+            state.isSuccess = true
+            state.goals = action.payload
+        })
+        .addCase(getGoals.rejected, (state, action) => {
             state.isLoading = false
             state.isError = true
             state.message = action.payload
