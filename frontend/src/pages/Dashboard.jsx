@@ -19,14 +19,15 @@ function Dashboard() {
 
     useEffect(() =>{
         if(isError){
-            console.log(isError)
+            console.log(message)
         }
 
         if(!user) {
             navigate('/login')
         }
-
-        dispatch(getGoals())
+        if(user){
+            dispatch(getGoals())
+        }
 
         //when the dashboard component unmounts(e.g user leaves dashboard) this will reset the goals
         return () => {
@@ -35,7 +36,7 @@ function Dashboard() {
     }, [user, navigate, isError, message, dispatch]) 
     
     if(isLoading) {
-        return<Spinner />
+        return <Spinner />
     }
     
     return (
@@ -49,12 +50,14 @@ function Dashboard() {
 
             <section className="content">
                 {goals.length > 0 ? (
-                    <div className="goals">
-                        {goals.map((goal) => {
-                            return <GoalItem key={goal._id} goal={goal} />
-                        })}
+                    <div className='goals'>
+                        {goals.map((goal) => (
+                            <GoalItem key={goal._id} goal={goal} />
+                        ))}
                     </div>
-                ) : (<h3>You have not set any goals</h3>)}
+                ) : (
+                    <h3>You have not set any goals</h3>
+                )}
             </section>
         </>
     )
